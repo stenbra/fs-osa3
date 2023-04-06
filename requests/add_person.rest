@@ -1,4 +1,4 @@
-POST http://localhost:3001/api/persons
+POST https://phonebook-2l2a.onrender.com/api/persons
 Content-Type: application/json
 
 {
@@ -7,7 +7,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3001/api/persons
+POST https://phonebook-2l2a.onrender.com/api/persons
 Content-Type: application/json
 
 {
