@@ -7,7 +7,7 @@ Content-Type: application/json
 }
 
 ###
-POST https://localhost:3001/api/persons/api/persons
+POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
