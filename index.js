@@ -1,5 +1,4 @@
-const mongoose = require('mongoose')
-const Person = require("./models/person")
+const Person = require('./models/person')
 const express = require('express')
 const app = express()
 var morgan = require('morgan')
@@ -9,7 +8,7 @@ const cors = require('cors')
 app.use(cors())
 app.use(express.static('build'))
 
-morgan.token('peron', function (req, res) { return JSON.stringify(req.body)})
+morgan.token('peron', function (req) { return JSON.stringify(req.body)})
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :peron'))
 
 
@@ -20,7 +19,7 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  }
 
   next(error)
 }
@@ -34,7 +33,11 @@ app.get('/', (request, response) => {
 })
 
 app.get('/info',(request, response) => {
-  response.send(` Phonebook has info for ${persons.length} people <br> <p>${Date()}</p>`)
+  Person.find({}).then(x => {
+    response.send(` Phonebook has info for ${x.length} people <br> <p>${Date()}</p>`)
+
+  })
+
 })
 
 app.get('/api/persons', (request, response) => {
@@ -44,19 +47,14 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)  
-  const person = persons.find(z => z.id === id)
-  if(person){
-    response.json(person)
-  }
-  else{
-    response.status(404).end()
-  }
+  Person.find({ _id:request.params.id }).then(x => {
+    response.json(x)
+  })
 })
 
 app.delete('/api/persons/:id', (request, response,next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
@@ -66,18 +64,18 @@ app.post('/api/persons', (request, response) => {
   const body = request.body
 
   if (!body.name) {
-    return response.status(400).json({ 
-      error: 'name missing' 
+    return response.status(400).json({
+      error: 'name missing'
     })
   }
 
   if (!body.number) {
-    return response.status(400).json({ 
-      error: 'number missing' 
+    return response.status(400).json({
+      error: 'number missing'
     })
   }
   // if(persons.filter(person => person.name.toLowerCase() === body.name.toLowerCase()).length>0){
-  //   return response.status(400).json({ 
+  //   return response.status(400).json({
   //     error: 'name must be unique'
   //   })
   // }
@@ -88,12 +86,12 @@ app.post('/api/persons', (request, response) => {
   //   number: body.number
   // }
   const person = new Person({
-        name:body.name,
-        number:body.number
-    })
-  person.save().then(result => {
-      console.log('phonenumber saved!')
-    })
+    name:body.name,
+    number:body.number
+  })
+  person.save().then(() => {
+    console.log('phonenumber saved!')
+  })
 
   //persons = persons.concat(person)
 

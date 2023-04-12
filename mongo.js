@@ -14,29 +14,29 @@ mongoose.set('strictQuery',false)
 mongoose.connect(url)
 
 const peronSchema = new mongoose.Schema({
-    name:String,
-    number:String,
+  name:String,
+  number:String,
 })
 
-const Peron = mongoose.model("Person",peronSchema)
+const Peron = mongoose.model('Person',peronSchema)
 
-if (process.argv.length==5) {
-    const person = new Peron({
-        name:process.argv[3],
-        number:process.argv[4]
-    })
-    person.save().then(result => {
-        console.log('phonenumber saved!')
-        mongoose.connection.close()
-      })
+if (process.argv.length===5) {
+  const person = new Peron({
+    name:process.argv[3],
+    number:process.argv[4]
+  })
+  person.save().then(() => {
+    console.log('phonenumber saved!')
+    mongoose.connection.close()
+  })
 }
 
-if (process.argv.length == 3){
-    Peron.find({}).then(result => {
-        console.log("Phonebook")
-        result.forEach(x => {
-          console.log(x.name,x.number)
-        })
-        mongoose.connection.close()
-      })
+if (process.argv.length === 3){
+  Peron.find({}).then(result => {
+    console.log('Phonebook')
+    result.forEach(x => {
+      console.log(x.name,x.number)
+    })
+    mongoose.connection.close()
+  })
 }
