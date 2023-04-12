@@ -1,3 +1,4 @@
+const mongoose = require('mongoose')
 const Person = require("./models/person")
 const express = require('express')
 const app = express()
@@ -80,18 +81,26 @@ app.post('/api/persons', (request, response) => {
       error: 'number missing' 
     })
   }
-  if(persons.filter(person => person.name.toLowerCase() === body.name.toLowerCase()).length>0){
-    return response.status(400).json({ 
-      error: 'name must be unique'
-    })
-  }
-  const person = {
-    id: Math.floor(Math.random() * 10000),
-    name: body.name,
-    number: body.number
-  }
+  // if(persons.filter(person => person.name.toLowerCase() === body.name.toLowerCase()).length>0){
+  //   return response.status(400).json({ 
+  //     error: 'name must be unique'
+  //   })
+  // }
 
-  persons = persons.concat(person)
+  // const person = {
+  //   id: Math.floor(Math.random() * 10000),
+  //   name: body.name,
+  //   number: body.number
+  // }
+  const person = new Person({
+        name:body.name,
+        number:body.number
+    })
+  person.save().then(result => {
+      console.log('phonenumber saved!')
+    })
+
+  //persons = persons.concat(person)
 
   response.json(person)
 })
